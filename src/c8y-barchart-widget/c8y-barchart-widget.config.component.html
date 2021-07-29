@@ -1,0 +1,61 @@
+<div class="row">
+    <c8y-form-group class="col-lg-3">
+        <label>Chart color</label>
+        <input type="color" class="form-control" [(ngModel)]="widgetInfo.chartColor" (change)="updateConfig()" />
+    </c8y-form-group>
+</div>
+<div class="row form-row" *ngFor="let dp of widgetInfo.datapoints; let i = index">
+    <div class="col-lg-12">
+        <div class="row" style="margin-bottom: 5px;">
+            <div class="col-lg-3">
+                <a (click)="deleteDatapoint(i)" style="cursor: pointer;">Delete datapoint</a>
+            </div>
+            <div class="col-lg-3">
+                <img [src]="dp.icon" style="max-height: 30px; max-width: 30px;"/>
+            </div>
+        </div>
+        <div class="row">
+            <c8y-form-group class="col-lg-3">
+                <label>Label</label>
+                <input type="text" class="form-control" [(ngModel)]="dp.label" (change)="updateConfig()" />
+            </c8y-form-group>
+            <c8y-form-group class="col-lg-4">
+                <label>Icon</label>
+                <input type="file" class="form-control" name="dp-icon" (change)="updateIconInConfig($event, i)" />
+            </c8y-form-group>
+            <c8y-form-group class="col-lg-2">
+                <label>Value type</label>
+                <select class="form-control" name="dp-target" [(ngModel)]="dp.target" (change)="targetChanged(i)">
+                    <option value="constant">Constant</option>
+                    <option value="device">Device</option>
+                </select>
+            </c8y-form-group>
+            <c8y-form-group class="col-lg-3" *ngIf="dp.target === 'constant'">
+                <label>Value</label>
+                <input type="text" class="form-control" name="dp-value" [(ngModel)]="dp.value" (change)="updateConfig()" />
+            </c8y-form-group>
+            <c8y-form-group class="col-lg-3" *ngIf="dp.target === 'device'">
+                <label>Select asset</label>
+                <select class="form-control" name="dp-asset-id" [(ngModel)]="dp.managedObjectId" (change)="assetUpdated(dp.managedObjectId, i)">
+                    <option [value]="asset.id" *ngFor="let asset of assetList">{{asset.name}}</option>
+                </select>
+            </c8y-form-group>
+            <c8y-form-group class="col-lg-3" *ngIf="dp.target === 'device'">
+                <label>Select measurement</label>
+                <select class="form-control" name="dp-measurement-id" [(ngModel)]="dp.value" (change)="updateConfig()">
+                    <option [value]="series" *ngFor="let series of dp.supportedSeries">{{series}}</option>
+                </select>
+            </c8y-form-group>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <hr class="separator" />
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+<button class="btn btn-primary" (click)="addNewDatapoint()">
+    Add new datapoint
+</button>
