@@ -28,7 +28,7 @@ export class C8yBarchartWidgetConfig implements OnInit, OnDestroy {
 
     @Input() config: any = {};
 
-    public assetList = [];
+    public managedObjectList = [];
 
     public widgetInfo = {
         creationTimestamp: Date.now(),
@@ -36,11 +36,11 @@ export class C8yBarchartWidgetConfig implements OnInit, OnDestroy {
         datapoints: [
             {
                 label: '',
-                target: 'constant',
+                valueType: 'constant',
                 managedObjectId: '',
                 value: '',
                 icon: '',
-                supportedSeries: []
+                supportedFragmentSeries: []
             }
         ]
     };
@@ -60,11 +60,11 @@ export class C8yBarchartWidgetConfig implements OnInit, OnDestroy {
         this.widgetInfo.datapoints.push(
             {
                 label: '',
-                target: 'constant',
+                valueType: 'constant',
                 managedObjectId: '',
                 value: '',
                 icon: '',
-                supportedSeries: []
+                supportedFragmentSeries: []
             }
         );
         this.updateConfig();
@@ -89,23 +89,23 @@ export class C8yBarchartWidgetConfig implements OnInit, OnDestroy {
         };
     }
 
-    public targetChanged(index: number): void {
+    public valueTypeChanged(index: number): void {
         this.widgetInfo.datapoints[index].value = "";
         this.widgetInfo.datapoints[index].managedObjectId = "";
         this.updateConfig();
     }
 
-    public assetUpdated(moId: string, index: number) {
+    public managedObjectChanged(moId: string, index: number) {
         this.fetchMeasurements(moId, index);
         this.updateConfig();
     }
 
-    public async fetchMeasurements(moId: string, index: number) {
-        this.widgetInfo.datapoints[index].supportedSeries = [];
+    private async fetchMeasurements(moId: string, index: number) {
+        this.widgetInfo.datapoints[index].supportedFragmentSeries = [];
         this.fetchClient.fetch("/inventory/managedObjects/" + moId + "/supportedSeries").then((resp) => {
             resp.json().then((body) => {
                 body.c8y_SupportedSeries.forEach((series) => {
-                    this.widgetInfo.datapoints[index].supportedSeries.push(series);
+                    this.widgetInfo.datapoints[index].supportedFragmentSeries.push(series);
                 });
             });
         });
@@ -119,13 +119,13 @@ export class C8yBarchartWidgetConfig implements OnInit, OnDestroy {
         };
         this.invSvc.list(filter).then((resp) => {
             resp.data.forEach((mo) => {
-                this.assetList.push({
+                this.managedObjectList.push({
                   id: mo.id,
                   name: mo.name  
                 });
             });
         }, (err) => {
-            console.log("Error: "+err);
+            console.log("Bar Chart widget Configuration: "+err);
         });
     }
 

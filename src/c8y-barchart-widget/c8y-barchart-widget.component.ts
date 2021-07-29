@@ -23,7 +23,6 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Chart } from 'chart.js';
 import { MeasurementService, Realtime } from '@c8y/ngx-components/api';
 import { formatDate } from '@angular/common';
-import { Subscription } from 'rxjs';
 
 
 interface CustomChart {
@@ -64,7 +63,6 @@ export class C8yBarchartWidget implements OnDestroy, OnInit {
         }
     };
 
-
     constructor(private measurementSvc: MeasurementService, private realtimeSvc: Realtime) {
     }
 
@@ -91,50 +89,45 @@ export class C8yBarchartWidget implements OnDestroy, OnInit {
 
             // Add points to the array
             for(let i=0; i<datapointsLength; i++) {
-                if(this.configDatapoints[i].target === "constant") {
+                if(this.configDatapoints[i].valueType === "constant") {
                     if(this.configDatapoints[i].value === undefined || this.configDatapoints[i].value === "") {
                         console.log("Bar chart widget - Value is missing.");
                         this.chart.data.points.push(0);
                     } else {
                         this.chart.data.points.push(this.configDatapoints[i].value);
                     }
-                } else if(this.configDatapoints[i].target === "device") {
-                    if(this.configDatapoints[i].value === undefined || this.configDatapoints[i].value === "") {
-                        console.log("Bar chart widget - Value is missing.");
+                } else if(this.configDatapoints[i].valueType === "measurement") {
+                    if(this.configDatapoints[i].managedObjectId === undefined || this.configDatapoints[i].managedObjectId === ""){
+                        console.log("Bar chart widget - Device/ Device group is missing.");
                         this.chart.data.points.push(0);
                     } else {
-                        if(this.configDatapoints[i].managedObjectId === undefined || this.configDatapoints[i].managedObjectId === ""){
-                            console.log("Bar chart widget - Device/ Device group is missing.");
+                        if(this.configDatapoints[i].value === undefined || this.configDatapoints[i].value === "") {
+                            console.log("Bar chart widget - Fragment series is missing.");
                             this.chart.data.points.push(0);
                         } else {
-                            if(this.configDatapoints[i].value === undefined || this.configDatapoints[i].value === "") {
-                                console.log("Bar chart widget - Value is missing.");
-                                this.chart.data.points.push(0);
-                            } else {
-                                let fragmentSeries: string[] = this.configDatapoints[i].value.split(".");
-                                let measurementFilter = {
-                                    source: this.configDatapoints[i].managedObjectId,
-                                    dateFrom: '1980-01-01',
-                                    dateTo: formatDate(new Date(), 'yyyy-MM-dd', 'en'),
-                                    revert: true,
-                                    valueFragmentType: fragmentSeries[0],
-                                    valueFragmentSeries: fragmentSeries[1],
-                                    pageSize: 1
-                                };
-                                let resp = await this.measurementSvc.list(measurementFilter);
-                                this.chart.data.points.push(resp.data[0][fragmentSeries[0]][fragmentSeries[1]].value);
-                                
-                                // Create realtime subscriptions
-                                let subs = this.realtimeSvc.subscribe('/measurements/'+this.configDatapoints[i].managedObjectId, (resp) => {
-                                    if(resp.data.data[fragmentSeries[0]]) {
-                                        if(resp.data.data[fragmentSeries[0]][fragmentSeries[1]]) {
-                                            this.chart.data.points[i] = resp.data.data[fragmentSeries[0]][fragmentSeries[1]].value;
-                                            this.chart.content.update();
-                                        }
+                            let fragmentSeries: string[] = this.configDatapoints[i].value.split(".");
+                            let measurementFilter = {
+                                source: this.configDatapoints[i].managedObjectId,
+                                dateFrom: '1980-01-01',
+                                dateTo: formatDate(new Date(), 'yyyy-MM-dd', 'en'),
+                                revert: true,
+                                valueFragmentType: fragmentSeries[0],
+                                valueFragmentSeries: fragmentSeries[1],
+                                pageSize: 1
+                            };
+                            let resp = await this.measurementSvc.list(measurementFilter);
+                            this.chart.data.points.push(resp.data[0][fragmentSeries[0]][fragmentSeries[1]].value);
+                            
+                            // Create realtime subscriptions
+                            let subs = this.realtimeSvc.subscribe('/measurements/'+this.configDatapoints[i].managedObjectId, (resp) => {
+                                if(resp.data.data[fragmentSeries[0]]) {
+                                    if(resp.data.data[fragmentSeries[0]][fragmentSeries[1]]) {
+                                        this.chart.data.points[i] = resp.data.data[fragmentSeries[0]][fragmentSeries[1]].value;
+                                        this.chart.content.update();
                                     }
-                                });
-                                this.realtimeSubscriptions.push(subs);
-                            }
+                                }
+                            });
+                            this.realtimeSubscriptions.push(subs);
                         }
                     }
                 } else {
