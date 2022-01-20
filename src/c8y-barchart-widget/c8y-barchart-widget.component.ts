@@ -84,7 +84,8 @@ export class C8yBarchartWidget implements OnDestroy, OnInit {
 
             // Add labels to the array
             this.chart.data.labels = this.configDatapoints.map((dp) => {
-                return dp.label;
+                // Create sub-array by splitting by space to enable multi-line label.
+                return dp.label.split(" ");
             });
 
             // Add points to the array
@@ -177,10 +178,16 @@ export class C8yBarchartWidget implements OnDestroy, OnInit {
                 maintainAspectRatio: false,
                 scales: {
                     xAxes: [{
-                        display: true
+                        display: true,
+                        gridLines: {
+                            display: false,
+                        }
                     }],
                     yAxes: [{
                         display: false,
+                        gridLines: {
+                            display: false,
+                          },
                         ticks: {
                             beginAtZero: true
                         }
