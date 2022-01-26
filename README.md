@@ -4,9 +4,9 @@ This is a runtime bar chart widget. It allows you to define multiple datapoints 
 
 ![Preview](src/c8y-barchart-widget/assets/img-preview.png)
 
-### Installation - for the dashboards using Runtime Widget Loader
+### Installation - for the dashboards using Application Builder
 1. Download the latest `c8y-barchart-widget-{version}.zip` file from the Releases section.
-2. Make sure you have Runtime Widget Loader installed on your Cockpit or App Builder app.
+2. Make sure you have Application Builder installed.
 3. Open a dashboard.
 4. Click `more...`.
 5. Select `Install Widget` and follow the instructions.
@@ -16,16 +16,16 @@ This is a runtime bar chart widget. It allows you to define multiple datapoints 
 2. Click on `Add widget`.
 3. Choose `Bar chart` widget.
 4. `Title` is the title of widget. Provide a relevant name. You may choose to hide this. Go to `Appearance` tab and choose `Hidden` under `Widget header style`.
-5. `Chart color` allows to choose a custom color for the bar chart.
-6. `Delete datapoint` allows you to delete a datapoint.
-7. `Label` is the name of the datapoint that will appear on the x-axis.
-8. `Icon` is for the icon you want to show on the top of the datapoint.
-9. `Value type` allows to you choose whether datapoint will have a `Constant` value or a `Measurement` value from a Device or a Device Group.
-10. `Value type` is `Constant`.
+5. `Delete datapoint` allows you to delete a datapoint.
+6. `Label` is the name of the datapoint that will appear on the x-axis.
+7. `Icon` is for the icon you want to show on the top of the datapoint.
+8. `Value type` allows to you choose whether datapoint will have a `Constant` value or a `Measurement` value from a Device or a Device Group.
+9. `Value type` is `Constant`.
     1. `Value` allows you provide a fixed value (numerical) for the datapoint.
-11. `Value type` is `Measurement`.
+10. `Value type` is `Measurement`.
     1. `Select device/ device group` allows you to choose a Device or Device Group.
     2. `Select fragment series` allows you to choose a `Fragment` and `Series` combined. It automatically gets populated based on the device or device group selected.
+11. `Color` allows you choose a color specific for the bar.
 12. `Add new datapoint` allows you to define additional datapoints.
 13. Click `Save` to add the widget on the dashboard.
 14. In case you see unexpected results on the widget, refer to browser console to see if there are error logs.

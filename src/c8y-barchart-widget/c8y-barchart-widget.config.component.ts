@@ -32,7 +32,6 @@ export class C8yBarchartWidgetConfig implements OnInit, OnDestroy {
 
     public widgetInfo = {
         creationTimestamp: Date.now(),
-        chartColor: '#1b73b6',
         datapoints: [
             {
                 label: '',
@@ -40,7 +39,8 @@ export class C8yBarchartWidgetConfig implements OnInit, OnDestroy {
                 managedObjectId: '',
                 value: '',
                 icon: '',
-                supportedFragmentSeries: []
+                supportedFragmentSeries: [],
+                color: '#1b73b6'
             }
         ]
     };
@@ -64,7 +64,8 @@ export class C8yBarchartWidgetConfig implements OnInit, OnDestroy {
                 managedObjectId: '',
                 value: '',
                 icon: '',
-                supportedFragmentSeries: []
+                supportedFragmentSeries: [],
+                color: '#1b73b6'
             }
         );
         this.updateConfig();

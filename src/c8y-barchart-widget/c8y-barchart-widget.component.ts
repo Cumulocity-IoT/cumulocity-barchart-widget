@@ -23,17 +23,17 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Chart } from 'chart.js';
 import { MeasurementService, Realtime } from '@c8y/ngx-components/api';
 import { formatDate } from '@angular/common';
-
+import * as  ChartDataLabels from 'chartjs-plugin-datalabels';
 
 interface CustomChart {
     position: string,
     content: any,
     type: string,
-    color: string,
     data: {
       points: number[],
       labels: string[],
-      icons: string[]
+      icons: string[],
+      colors: string[]
     }
   }
 
@@ -54,12 +54,12 @@ export class C8yBarchartWidget implements OnDestroy, OnInit {
     public chart: CustomChart = {
         position: 'bottom',
         content: {},
-        color: '#1776bf',
         type: 'bar',
         data: {
             points: [],
             labels: [],
-            icons: []
+            icons: [],
+            colors: []
         }
     };
 
@@ -72,9 +72,6 @@ export class C8yBarchartWidget implements OnDestroy, OnInit {
             // Get creation timestamp
             this.creationTimestamp = this.config.customwidgetdata.creationTimestamp;
 
-            // Get chart color
-            this.chart.color = this.config.customwidgetdata.chartColor;
-
             // Get datapoints
             this.configDatapoints = this.config.customwidgetdata.datapoints;
             if(this.configDatapoints === undefined || this.configDatapoints.length === 0) {
@@ -86,6 +83,11 @@ export class C8yBarchartWidget implements OnDestroy, OnInit {
             this.chart.data.labels = this.configDatapoints.map((dp) => {
                 // Create sub-array by splitting by space to enable multi-line label.
                 return dp.label.split(" ");
+            });
+
+            // Add colors to the array
+            this.chart.data.colors = this.configDatapoints.map((dp) => {
+                return dp.color;
             });
 
             // Add points to the array
@@ -154,12 +156,13 @@ export class C8yBarchartWidget implements OnDestroy, OnInit {
     private showChart(): void {
         this.chart.content = new Chart(this.getUniqueIdForChart(), {
             type: this.chart.type,
+            plugins: [ChartDataLabels as any],
             data: {
                 labels: this.chart.data.labels,
                 datasets: [
                     {
                         data: this.chart.data.points,
-                        backgroundColor: this.chart.color
+                        backgroundColor: this.chart.data.colors
                     }
                 ]
             },
@@ -192,6 +195,18 @@ export class C8yBarchartWidget implements OnDestroy, OnInit {
                             beginAtZero: true
                         }
                     }],
+                },
+                layout: {
+                    padding: {
+                        top: 25
+                    }
+                },
+                plugins: {
+                    datalabels: {
+                        color: this.chart.data.colors,
+                        anchor: 'end',
+                        align: 'top'
+                    }
                 }
             }
         });
