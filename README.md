@@ -2,6 +2,11 @@
 
 This is a runtime bar chart widget. It allows you to define multiple datapoints as constant (fixed) values or actual measurement values in realtime from Device or Device Groups. In addition, you can add custom icon respective to each datapoint.
 
+
+### ⚠️ This project is no longer under development. Please use [cumulocity-barchart-widget-plugin](https://github.com/SoftwareAG/cumulocity-barchart-widget-plugin) for Application Builder >=2.x.x and Cumulocity >=1016.x.x⚠️
+
+
+
 ![Preview](src/c8y-barchart-widget/assets/img-preview.png)
 
 ### Installation - for the dashboards using Application Builder
